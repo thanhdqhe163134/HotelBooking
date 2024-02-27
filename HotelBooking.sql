@@ -8,6 +8,7 @@ CREATE TABLE Room (
     Price DECIMAL(10, 2),
     Status NVARCHAR(20),
 	Description NVARCHAR(MAX),
+	IMG NVARCHAR(255),
     CreatedDate DATETIME,
 	CreatedBy NVARCHAR(100),
 	UpdatedDate DATETIME,
@@ -79,9 +80,9 @@ CREATE TABLE InvoiceService (
     FOREIGN KEY (ServiceID) REFERENCES Service(ServiceID)
 );
 
-INSERT INTO Room (RoomType, Price, Status, Description, CreatedDate, CreatedBy)
-VALUES ('Single', 100.00, 'Available','SFKJHGJKDFHGDFGJDFHGDFJGHDFJKGDFGDFGDFG', GETDATE(), 'admin'),
-       ('Double', 200.00, 'Available','SFKJHGJKDFHGDFGJDFHGDFJGHDFJKGDFGDFGDFG', GETDATE(), 'admin');
+INSERT INTO Room (RoomType, Price, Status, Description, IMG, CreatedDate, CreatedBy)
+VALUES ('Single', 100.00, 'Available','Air conditioner, Fan, TV, Water heater, Wifi, Fridge, The simplest room with minimal equipment, Small area, Low floor, No view','images/room1.jpg', GETDATE(), 'admin'),
+       ('Double', 200.00, 'Available','Air conditioner, Fan, TV, Water heater, Wifi, Fridge, The simplest room with minimal equipment, Small area, Low floor, No view','images/room2.jpg', GETDATE(), 'admin');
 
 INSERT INTO Customer (Name, Email, Phone, PersonalInfo)
 VALUES ('Customer 1', 'customer1@email.com', '1234567890', 'Personal info for Customer 1'),

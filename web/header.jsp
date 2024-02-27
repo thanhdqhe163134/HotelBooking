@@ -46,7 +46,7 @@
           <div class="full">
             <div class="center-desk">
               <div class="logo">
-                <a href="index.jsp"><img src="images/logo.png" alt="#" /></a>
+                <a href="home.jsp"><img src="images/logo.png" alt="#" /></a>
               </div>
             </div>
           </div>
@@ -58,22 +58,36 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarsExample04">
               <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                  <a class="nav-link" href="index.jsp">Home</a>
+                <li class="nav-item <%=request.getServletPath().contains("/home") ? "active" : ""%>">
+                  <a class="nav-link" href="home">Home</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item <%=request.getServletPath().contains("/room-list") ? "active" : ""%>">
+                  <a class="nav-link" href="room-list">Our room</a>
+                </li>
+                <li class="nav-item <%=request.getServletPath().contains("/about.html") ? "active" : ""%>">
                   <a class="nav-link" href="about.html">About</a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="room.jsp">Our room</a>
-                </li>
-                <li class="nav-item">
+                <li class="nav-item <%=request.getServletPath().contains("/gallery.html") ? "active" : ""%>">
                   <a class="nav-link" href="gallery.html">Gallery</a>
                 </li>
-
-                <li class="nav-item">
+                <li class="nav-item <%=request.getServletPath().contains("/contact.html") ? "active" : ""%>">
                   <a class="nav-link" href="contact.html">Contact Us</a>
                 </li>
+                <% if (request.getSession().getAttribute("loggedInUser") == null) { %>
+                <li class="nav-item <%=request.getServletPath().contains("/login") ? "active" : ""%>">
+                  <a class="nav-link" href="login">Login</a>
+                </li>
+                <% } else { %>
+                <li class="nav-item <%=request.getServletPath().contains("/profile") ? "active" : ""%>">
+                  <a class="nav-link" href="contact.html">Profile</a>
+                </li>
+                <li class="nav-item <%=request.getServletPath().contains("/booked-room") ? "active" : ""%>">
+                  <a class="nav-link" href="contact.html">Booked Room</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="logout">Logout</a>
+                </li>
+                <% } %>
               </ul>
             </div>
           </nav>

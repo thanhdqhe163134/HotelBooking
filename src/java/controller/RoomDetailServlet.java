@@ -17,7 +17,7 @@ public class RoomDetailServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int roomID = Integer.parseInt(request.getParameter("roomID"));
         request.setAttribute("room", roomDAO.getRoomByID(roomID));
-        request.getRequestDispatcher("roomDetail.jsp").forward(request, response);
+        request.getRequestDispatcher("room-detail.jsp").forward(request, response);
 
     }
 

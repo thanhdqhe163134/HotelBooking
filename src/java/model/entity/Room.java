@@ -4,11 +4,15 @@ import java.util.Date;
 
 public class Room {
     private int roomId;
+
+
     private String roomType;
     private double price;
     private String status;
 
     private String Description;
+
+    private String IMG;
     private Date createdDate;
     private String createdBy;
     private Date updatedDate;
@@ -20,12 +24,13 @@ public class Room {
     public Room() {
     }
 
-    public Room(int roomId, String roomType, double price, String status, String description, Date createdDate, String createdBy, Date updatedDate, String updatedBy, boolean isDelete, Date deletedDate, String deletedBy) {
+    public Room(int roomId, String roomType, double price, String status, String description, String IMG, Date createdDate, String createdBy, Date updatedDate, String updatedBy, boolean isDelete, Date deletedDate, String deletedBy) {
         this.roomId = roomId;
         this.roomType = roomType;
         this.price = price;
         this.status = status;
         Description = description;
+        this.IMG = IMG;
         this.createdDate = createdDate;
         this.createdBy = createdBy;
         this.updatedDate = updatedDate;
@@ -35,12 +40,21 @@ public class Room {
         this.deletedBy = deletedBy;
     }
 
-    public Room(int roomId, String roomType, double price, String status, String description) {
+    public Room(int roomId, String roomType, double price, String status, String description, String IMG) {
         this.roomId = roomId;
         this.roomType = roomType;
         this.price = price;
         this.status = status;
         Description = description;
+        this.IMG = IMG;
+    }
+
+    public String getIMG() {
+        return IMG;
+    }
+
+    public void setIMG(String IMG) {
+        this.IMG = IMG;
     }
 
     public String getDescription() {
