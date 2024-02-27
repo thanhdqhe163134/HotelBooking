@@ -29,7 +29,7 @@ CREATE TABLE Customer (
 CREATE TABLE Account (
 	AccountID INT IDENTITY(1,1) PRIMARY KEY,
 	Username NVARCHAR(20),
-	Password NVARCHAR(100),
+	Password NVARCHAR(max),
 	CustomerID INT,
 	Role NVARCHAR(10),
 	CreatedDate DATETIME,

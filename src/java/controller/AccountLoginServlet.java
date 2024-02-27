@@ -35,8 +35,8 @@ public class AccountLoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        boolean rememberMe = request.getParameter("rememberMe") != null;
-
+//        boolean rememberMe = request.getParameter("rememberMe") != null;
+        boolean rememberMe = true;
         Account account = accountDAO.login(username, password);
         if (account != null) {
             HttpSession session = request.getSession();
@@ -45,13 +45,13 @@ public class AccountLoginServlet extends HttpServlet {
             if (rememberMe) {
                 // Nếu checkbox "Remember Me" được chọn, tạo và lưu cookies
                 Cookie usernameCookie = new Cookie("rememberedUsername", username);
-                Cookie passwordCookie = new Cookie("rememberedPassword", password);
+//                Cookie passwordCookie = new Cookie("rememberedPassword", password);
 
                 usernameCookie.setMaxAge(7 * 24 * 60 * 60); // Thời gian sống của cookie (7 ngày)
-                passwordCookie.setMaxAge(7 * 24 * 60 * 60);
+//                passwordCookie.setMaxAge(7 * 24 * 60 * 60);
 
                 response.addCookie(usernameCookie);
-                response.addCookie(passwordCookie);
+//                response.addCookie(passwordCookie);
             } else {
                 // Nếu checkbox không được chọn, xóa cookies nếu có
                 Cookie[] cookies = request.getCookies();
@@ -67,8 +67,8 @@ public class AccountLoginServlet extends HttpServlet {
             response.sendRedirect("home");
 
         } else {
-            request.setAttribute("loginFailed", true);
-            request.getRequestDispatcher("login").forward(request, response);
+            request.setAttribute("message", "Username or password is incorrect. Please try again.");
+            doGet(request, response);
         }
     }
 }
