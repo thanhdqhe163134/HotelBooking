@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: faced
-  Date: 2/27/2024
-  Time: 2:53 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -53,11 +46,11 @@
           <h3>Menu Link</h3>
           <ul class="link_menu">
             <li class="active"><a href="home">Home</a></li>
-            <li><a href="about.html"> about</a></li>
+            <li><a href="about.jsp">About</a></li>
             <li><a href="room-list.jsp">Our Room</a></li>
-            <li><a href="gallery.html">Gallery</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="gallery.jsp">Gallery</a></li>
+            <li><a href="blog.jsp">Blog</a></li>
+            <li><a href="contact.jsp">Contact Us</a></li>
           </ul>
         </div>
         <div class="col-md-4">
@@ -79,13 +72,9 @@
       <div class="container">
         <div class="row">
           <div class="col-md-10 offset-md-1">
-
             <p>
-              © 2019 All Rights Reserved. Design by <a href="https://html.design/"> Free Html Templates</a>
-              <br><br>
-              Distributed by <a href="https://themewagon.com/" target="_blank">ThemeWagon</a>
+              © 2022 All Rights Reserved. Design by me</a>
             </p>
-
           </div>
         </div>
       </div>
@@ -93,3 +82,4 @@
   </div>
 </footer>
 </html>
+

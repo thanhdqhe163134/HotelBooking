@@ -381,10 +381,10 @@
                                         <div class="section text-center">
                                             <h4 class="mb-4 pb-3" style="color: white">Sign Up</h4>
                                             <form action="register" method="post">
-                                                <% if (request.getAttribute("message2") != null) { %>
+                                            <% if (request.getAttribute("message2") != null) { %>
                                                 <p style="color: red;"><%= request.getAttribute("message2") %></p>
-                                                <% } %>
-                                                <div class="form-group">
+                                            <% } %>
+                                             <div class="form-group">
                                                 <input type="text" name="username" class="form-style" placeholder="Username" id="logname" autocomplete="off">
                                                 <i class="input-icon uil uil-user"></i>
                                             </div>
@@ -393,7 +393,7 @@
                                                 <i class="input-icon uil uil-lock-alt"></i>
                                             </div>
                                             <div class="form-group mt-2">
-                                                <input type="password" name="rePassword" class="form-style" placeholder="Re Enter Password" autocomplete="off">
+                                                <input type="password" name="rePassword" class="form-style" placeholder="Confirm Password" autocomplete="off">
                                                 <i class="input-icon uil uil-at"></i>
                                             </div>
                                             <div class="form-group mt-2">

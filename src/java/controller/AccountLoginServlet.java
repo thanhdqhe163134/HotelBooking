@@ -4,15 +4,19 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.dao.AccountDAO;
+import model.dao.CustomerDAO;
 import model.entity.Account;
+import model.entity.Customer;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @WebServlet(name = "AccountLoginServlet", value = "/login")
 public class AccountLoginServlet extends HttpServlet {
 
     AccountDAO accountDAO = new AccountDAO();
-
+    CustomerDAO customerDAO = new CustomerDAO();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cookie arr[] = request.getCookies();
@@ -40,6 +44,10 @@ public class AccountLoginServlet extends HttpServlet {
         Account account = accountDAO.login(username, password);
         if (account != null) {
             HttpSession session = request.getSession();
+            Customer customer = customerDAO.findByAccountId(account.getAccountId());
+            if(customer != null) {
+                session.setAttribute("customer", customer);
+            }
             session.setAttribute("loggedInUser", account);
 
             if (rememberMe) {
@@ -64,7 +72,19 @@ public class AccountLoginServlet extends HttpServlet {
                     }
                 }
             }
-            response.sendRedirect("home");
+            String checkInDateStr = (String) session.getAttribute("checkInDate");
+            String checkOutDateStr = (String) session.getAttribute("checkOutDate");
+            String roomID = (String) session.getAttribute("roomID");
+            if (checkInDateStr != null && checkOutDateStr != null && roomID != null) {
+                LocalDateTime checkInDate = LocalDateTime.parse(checkInDateStr);
+                LocalDateTime checkOutDate = LocalDateTime.parse(checkOutDateStr);
+                request.setAttribute("checkInDate", checkInDate);
+                request.setAttribute("checkOutDate", checkOutDate);
+                request.setAttribute("roomID", roomID);
+                request.getRequestDispatcher("booking.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("home");
+            }
 
         } else {
             request.setAttribute("message", "Username or password is incorrect. Please try again.");

@@ -1,5 +1,7 @@
 <%@ page import="model.entity.Room" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="model.entity.Account" %>
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -54,8 +56,11 @@
             </div>
          </div>
       </div>
+
       <!-- our_room -->
       <div  class="our_room">
+         <div id="error-message"></div>
+
          <div class="container">
             <div class="row">
                <div class="col-md-12">
@@ -84,6 +89,43 @@
                   </div>
                </div>
             </div>
+            <%
+               session = request.getSession(false);
+                role = null;
+               String username = null;
+
+               if (session != null) {
+                  Account loggedInUser = (Account) session.getAttribute("loggedInUser");
+                  if (loggedInUser != null) {
+                     role = loggedInUser.getRole(); // Lấy role từ Account
+                     username = loggedInUser.getUsername(); // Lấy username từ Account
+                  }
+               }
+
+                isAdmin = "admin".equals(role); // Kiểm tra xem role có phải là admin không
+
+
+
+            %>
+            <% if (isAdmin) { %>
+            <a href="create-room" class="btn btn-primary" style="background: green">Add new room</a>
+            <% } %>
+            <br>
+            <br>
+            <div class="row">
+               <%
+                  LocalDateTime checkInDate = (LocalDateTime) request.getAttribute("checkInDate");
+                  LocalDateTime checkOutDate = (LocalDateTime) request.getAttribute("checkOutDate");
+               %>
+               <div class="col-md-6 col-md-12">
+                  <label for="check_in_date">Check In Date: </label>
+                  <input type="datetime-local" id="check_in_date" value="<%= checkInDate != null ? checkInDate : "" %>">
+               </div>
+               <div class="col-md-6 col-md-12">
+                  <label for="check_out_date">Check Out Date: </label>
+                  <input type="datetime-local" id="check_out_date" value="<%= checkOutDate != null ? checkOutDate : "" %>">
+               </div>
+            </div>
             <div class="row" id="roomList">
                <%
                   List<Room> roomList = (List<Room>) request.getAttribute("roomList");
@@ -92,7 +134,7 @@
                      Room room = roomList.get(i);
                %>
                <div class="col-md-4 col-sm-6 room-item" style="display: <%=i < pageSize ? "block" : "none"%>">
-                  <div id="serv_hover"  class="room <%=room.getStatus().equals("Available") ? "" : "unavailable"%>">
+                  <div id="serv_hover"  class="room <%=room.getStatus().equals("Available") ? "" : "Unavailable"%>">
                      <div class="room_img">
                         <figure><img src="<%=room.getIMG()%>" alt="#"/></figure>
                      </div>
@@ -101,7 +143,12 @@
                         <p class="room_price">$<%=room.getPrice()%>/day</p>
                         <p class="bed_room"><%=room.getDescription()%></p>
                         <% if(room.getStatus().equals("Available")) { %>
-                        <a href="booking.jsp?roomID=<%=room.getRoomId()%>" class="book_btn">Book now</a>
+                        <a href="create-booking?roomID=<%=room.getRoomId()%>" id="room_<%=room.getRoomId()%>" class="book_btn" onclick="return bookRoom('<%= room.getRoomId() %>')">Book now</a>
+                        <% } %>
+                        <% if (isAdmin) { %>
+                        <br>
+                        <a href="update-room?roomID=<%=room.getRoomId()%>" class="btn btn-primary">Edit</a>
+                        <a href="delete-room?roomID=<%=room.getRoomId()%>" class="btn btn-primary" STYLE="background: red">Delete</a>
                         <% } %>
                      </div>
                   </div>
@@ -134,7 +181,7 @@
       <!-- end our_room -->
      
       <!--  footer -->
-        <%@include file="footer.jsp" %>
+      <%@include file="footer.jsp" %>
 
       <!-- end footer -->
       <!-- Javascript files-->
@@ -223,34 +270,83 @@
    #loadMoreBtn:hover {
       background-color: red;
    }
+
 </style>
 
-   <script>
-      function filterRooms() {
-         // Get selected values
-         var priceFilter = document.getElementById('priceFilter').value;
-         var statusFilter = document.getElementById('statusFilter').value;
-         var typeFilter = document.getElementById('typeFilter').value;
+<script>
+   function filterRooms() {
+      // Get selected values
+      var priceFilter = document.getElementById('priceFilter').value;
+      var statusFilter = document.getElementById('statusFilter').value;
+      var typeFilter = document.getElementById('typeFilter').value;
 
-         // Build the URL with the selected values
-         var url = 'room-list?priceFilter=' + priceFilter + '&statusFilter=' + statusFilter + '&typeFilter=' + typeFilter;
+      // Build the URL with the selected values
+      var url = 'room-list?priceFilter=' + priceFilter + '&statusFilter=' + statusFilter + '&typeFilter=' + typeFilter;
 
-         // Redirect to the new URL
-         window.location.href = url;
+      // Redirect to the new URL
+      window.location.href = url;
+   }
+
+   function resetFilter() {
+      // Redirect to the original page without any filters
+      window.location.href = 'room-list';
+   }
+
+   // Set the selected option of the dropdowns based on the URL parameters
+   window.onload = function() {
+      var urlParams = new URLSearchParams(window.location.search);
+      document.getElementById('priceFilter').value = urlParams.get('priceFilter') || 'all';
+      document.getElementById('statusFilter').value = urlParams.get('statusFilter') || 'all';
+      document.getElementById('typeFilter').value = urlParams.get('typeFilter') || 'all';
+   }
+
+   function bookRoom(str) {
+      var flag = validateDateInRoomList()
+      if (flag) {
+         var checkInDate = document.getElementById("check_in_date").value;
+         var checkOutDate = document.getElementById("check_out_date").value;
+         var url = document.querySelector("a#room_" + str);
+         var newUrl = url.getAttribute('href') + "&check_in_date=" + checkInDate + "&check_out_date=" + checkOutDate;
+         url.setAttribute('href', newUrl)
+         window.location.href = url.getAttribute('href');
+      }
+      return flag;
+   }
+
+   var checkInDate = document.getElementById("check_in_date");
+   var checkOutDate = document.getElementById("check_out_date");
+   var errorMessage = document.querySelector("#error-message");
+
+   function isDateValid(dateStr) {
+      return !isNaN(new Date(dateStr));
+   }
+
+   function validateDateInRoomList() {
+      var flag = true;
+      if (!(isDateValid(checkInDate.value) && isDateValid(checkOutDate.value))) {
+         errorMessage.textContent = "Invalid date"
+         flag = false;
+      } else {
+         var selectedCheckInDate = new Date(checkInDate.value);
+         var selectedCheckOutDate = new Date(checkOutDate.value);
+         var currentDate = new Date();
+         if (!(selectedCheckInDate >= currentDate && selectedCheckOutDate > selectedCheckInDate)) {
+            errorMessage.textContent = "The check-in date must be greater than or equal to the current date, check-out date must be greater than check-in date"
+            flag = false;
+         }
       }
 
-      function resetFilter() {
-         // Redirect to the original page without any filters
-         window.location.href = 'room-list';
+      if (!flag) {
+         errorMessage.style.display = "block"; // Hiển thị thông báo nếu ngày nhỏ hơn ngày hiện tại
+         setTimeout(function () {
+            errorMessage.style.display = "none"; // Ẩn thông báo sau 3 giây
+         }, 3000);
+      } else {
+         errorMessage.style.display = "none"
       }
 
-      // Set the selected option of the dropdowns based on the URL parameters
-      window.onload = function() {
-         var urlParams = new URLSearchParams(window.location.search);
-         document.getElementById('priceFilter').value = urlParams.get('priceFilter') || 'all';
-         document.getElementById('statusFilter').value = urlParams.get('statusFilter') || 'all';
-         document.getElementById('typeFilter').value = urlParams.get('typeFilter') || 'all';
-      }
-   </script>
+      return flag;
+   }
+</script>
 
 </html>

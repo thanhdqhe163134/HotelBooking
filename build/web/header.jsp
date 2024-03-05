@@ -1,3 +1,4 @@
+<%@ page import="model.entity.Account" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <html lang="en">
@@ -28,6 +29,7 @@
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+  <script src="js/custom.js"></script>
 </head>
 <!-- body -->
 <body class="main-layout">
@@ -38,6 +40,21 @@
 <!-- end loader -->
 <!-- header -->
 <header>
+  <%
+    session = request.getSession(false);
+    String role = null;
+    if (session != null) {
+      Account loggedInUser = (Account) session.getAttribute("loggedInUser");
+      if (loggedInUser != null) {
+        role = loggedInUser.getRole(); // Lấy role từ Account
+      }
+    }
+
+    boolean isAdmin = "admin".equals(role); // Kiểm tra xem role có phải là admin không
+
+
+
+  %>
   <!-- header inner -->
   <div class="header">
     <div class="container">
@@ -62,16 +79,16 @@
                   <a class="nav-link" href="home">Home</a>
                 </li>
                 <li class="nav-item <%=request.getServletPath().contains("/room-list") ? "active" : ""%>">
-                  <a class="nav-link" href="room-list">Our room</a>
+                  <a class="nav-link" href="room-list">Rooms</a>
                 </li>
-                <li class="nav-item <%=request.getServletPath().contains("/about.html") ? "active" : ""%>">
-                  <a class="nav-link" href="about.html">About</a>
+                <li class="nav-item <%=request.getServletPath().contains("/about") ? "active" : ""%>">
+                  <a class="nav-link" href="about">About</a>
                 </li>
-                <li class="nav-item <%=request.getServletPath().contains("/gallery.html") ? "active" : ""%>">
-                  <a class="nav-link" href="gallery.html">Gallery</a>
+                <li class="nav-item <%=request.getServletPath().contains("/gallery") ? "active" : ""%>">
+                  <a class="nav-link" href="gallery">Gallery</a>
                 </li>
-                <li class="nav-item <%=request.getServletPath().contains("/contact.html") ? "active" : ""%>">
-                  <a class="nav-link" href="contact.html">Contact Us</a>
+                <li class="nav-item <%=request.getServletPath().contains("/contact") ? "active" : ""%>">
+                  <a class="nav-link" href="contact">Contact</a>
                 </li>
                 <% if (request.getSession().getAttribute("loggedInUser") == null) { %>
                 <li class="nav-item <%=request.getServletPath().contains("/login") ? "active" : ""%>">
@@ -79,11 +96,17 @@
                 </li>
                 <% } else { %>
                 <li class="nav-item <%=request.getServletPath().contains("/profile") ? "active" : ""%>">
-                  <a class="nav-link" href="contact.html">Profile</a>
+                  <a class="nav-link" href="profile">Profile</a>
                 </li>
-                <li class="nav-item <%=request.getServletPath().contains("/booked-room") ? "active" : ""%>">
-                  <a class="nav-link" href="contact.html">Booked Room</a>
+
+                <% if(isAdmin) { %>
+                <li class="nav-item <%=request.getServletPath().contains("/booking-list") ? "active" : ""%>">
+                  <a class="nav-link" href="booking-list">Booking</a>
+                <% } else {%>
+                <li class="nav-item <%=request.getServletPath().contains("/booked-list") ? "active" : ""%>">
+                  <a class="nav-link" href="booked-list">Booked</a>
                 </li>
+                <% } %>
                 <li class="nav-item">
                   <a class="nav-link" href="logout">Logout</a>
                 </li>
@@ -97,4 +120,9 @@
   </div>
 </header>
 </body>
+<style>
+
+</style>
+
 </html>
+

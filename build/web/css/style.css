@@ -484,6 +484,13 @@ button {
      padding-bottom: 35px;
 }
 
+.about .titlepage blockquote {
+     font-weight: 400;
+     font-size: 17px;
+     line-height: 28px;
+     padding-bottom: 35px;
+}
+
 .about_img {
      margin-right: 40px;
      overflow: hidden;
@@ -943,6 +950,21 @@ line-height: 35px;
      margin-top: 90px;
 }
 
+.payment_method {
+    display: block;
+}
+
+#error-message {
+  position: fixed;
+  top: 90px; /* Thay đổi giá trị tùy thích cho vị trí top */
+  right: 40px; /* Thay đổi giá trị tùy thích cho vị trí right */
+  background-color: red; /* Màu nền của thông báo */
+  color: white; /* Màu chữ của thông báo */
+  padding: 10px; /* Khoảng cách padding xung quanh nội dung của thông báo */
+  border-radius: 5px; /* Bo tròn các góc của thông báo */
+  display: none; /* Ẩn thông báo ban đầu */
+  z-index: 999; /* Khiến tag nổi lên trên đầu */
+}
 
 
 

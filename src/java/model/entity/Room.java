@@ -4,14 +4,10 @@ import java.util.Date;
 
 public class Room {
     private int roomId;
-
-
     private String roomType;
     private double price;
     private String status;
-
     private String Description;
-
     private String IMG;
     private Date createdDate;
     private String createdBy;

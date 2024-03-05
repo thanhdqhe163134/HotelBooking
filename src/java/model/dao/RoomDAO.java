@@ -13,15 +13,19 @@ import java.util.List;
 public class RoomDAO {
 
     Connection connection = DBConnect.getConnection();
-    public boolean createRoom(String roomType, String roomPrice, String roomStatus, String roomDescription) {
+
+    public boolean createRoom(String roomType, String roomPrice, String roomStatus, String roomDescription, String relativePath, String createdBy) {
         if (connection != null) {
             try {
-                String sql = "INSERT INTO Room (roomType, roomPrice, roomStatus, roomDescription) VALUES (?, ?, ?, ?)";
+                String sql = "INSERT INTO Room(roomType, Price, Status, Description, IMG, createdDate, createdBy) VALUES(?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, roomType);
                 preparedStatement.setString(2, roomPrice);
-                preparedStatement.setString(3, roomStatus);
+                preparedStatement.setString(3, "Available");
                 preparedStatement.setString(4, roomDescription);
+                preparedStatement.setString(5, relativePath);
+                preparedStatement.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
+                preparedStatement.setString(7, createdBy);
                 preparedStatement.executeUpdate();
                 return true;
             } catch (Exception e) {
@@ -33,7 +37,7 @@ public class RoomDAO {
 
     public List<Room> getAllRooms() {
         List<Room> roomList = new ArrayList<>();
-        if(connection != null){
+        if (connection != null) {
             try {
                 String sql = "SELECT * FROM Room where isDelete = 0";
                 Statement statement = connection.createStatement();
@@ -48,7 +52,7 @@ public class RoomDAO {
                     room.setIMG(resultSet.getString("IMG"));
                     roomList.add(room);
                 }
-                } catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -85,26 +89,7 @@ public class RoomDAO {
         return room;
     }
 
-    public boolean updateRoom(int roomID, String roomType, String roomPrice, String roomStatus, String roomDescription) {
-        if (connection != null) {
-            try {
-                String sql = "UPDATE Room SET roomType = ?, roomPrice = ?, roomStatus = ?, roomDescription = ?, updatedDate = ?, updatedBy = ? WHERE roomID = ?";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, roomType);
-                preparedStatement.setString(2, roomPrice);
-                preparedStatement.setString(3, roomStatus);
-                preparedStatement.setString(4, roomDescription);
-                preparedStatement.setDate(5, new java.sql.Date(System.currentTimeMillis()));
-                preparedStatement.setString(6, "admin");
-                preparedStatement.setInt(7, roomID);
-                preparedStatement.executeUpdate();
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
+
 
     public List<Room> filterRooms(String priceFilter, String statusFilter, String typeFilter) {
         List<Room> roomList = new ArrayList<>();
@@ -149,5 +134,58 @@ public class RoomDAO {
             }
         }
         return roomList;
+    }
+
+    public void updateRoomStatus(Integer roomID, String unavailable) {
+        if (connection != null) {
+            try {
+                String sql = "UPDATE Room SET Status = ? WHERE roomID = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, unavailable);
+                preparedStatement.setInt(2, roomID);
+                preparedStatement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean updateRoom(int roomID, String roomType, String roomPrice, String roomStatus, String roomDescription, String relativePath, String username) {
+        if (connection != null) {
+            try {
+                String sql = "UPDATE Room SET roomType = ?, Price = ?, Status = ?, Description = ?, IMG = ?, updatedDate = ?, updatedBy = ? WHERE roomID = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, roomType);
+                preparedStatement.setString(2, roomPrice);
+                preparedStatement.setString(3, roomStatus);
+                preparedStatement.setString(4, roomDescription);
+                preparedStatement.setString(5, relativePath);
+                preparedStatement.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
+                preparedStatement.setString(7, username);
+                preparedStatement.setInt(8, roomID);
+                preparedStatement.executeUpdate();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public boolean deleteRoom(int id) {
+        if (connection != null) {
+            try {
+                String sql = "UPDATE Room SET isDelete = 1, deletedDate = ?, deletedBy = ? WHERE roomID = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+                preparedStatement.setString(2, "admin");
+                preparedStatement.setInt(3, id);
+                preparedStatement.executeUpdate();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

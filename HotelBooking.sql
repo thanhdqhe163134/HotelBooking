@@ -2,6 +2,7 @@ CREATE DATABASE HotelBooking;
 GO
 USE HotelBooking;
 GO
+
 CREATE TABLE Room (
     RoomID INT IDENTITY(1,1) PRIMARY KEY,
     RoomType NVARCHAR(50),
@@ -46,8 +47,8 @@ CREATE TABLE Invoice (
     InvoiceID INT IDENTITY(1,1) PRIMARY KEY,
     CustomerID INT,
     RoomID INT,
-    CheckInDate DATE,
-    CheckOutDate DATE,
+    CheckInDate DATETIME,
+    CheckOutDate DATETIME,
     Total DECIMAL(10, 2),
     PaymentMethod NVARCHAR(20),
 	Note NVARCHAR(MAX),
@@ -81,8 +82,8 @@ CREATE TABLE InvoiceService (
 );
 
 INSERT INTO Room (RoomType, Price, Status, Description, IMG, CreatedDate, CreatedBy)
-VALUES ('Single', 100.00, 'Available','Air conditioner, Fan, TV, Water heater, Wifi, Fridge, The simplest room with minimal equipment, Small area, Low floor, No view','images/room1.jpg', GETDATE(), 'admin'),
-       ('Double', 200.00, 'Available','Air conditioner, Fan, TV, Water heater, Wifi, Fridge, The simplest room with minimal equipment, Small area, Low floor, No view','images/room2.jpg', GETDATE(), 'admin');
+VALUES ('Standard', 100.00, 'Available','Air conditioner, Fan, TV, Water heater, Wifi, Fridge, The simplest room with minimal equipment, Small area, Low floor, No view','images/room1.jpg', GETDATE(), 'admin'),
+       ('Normal', 200.00, 'Available','Air conditioner, Fan, TV, Water heater, Wifi, Fridge, The simplest room with minimal equipment, Small area, Low floor, No view','images/room2.jpg', GETDATE(), 'admin');
 
 INSERT INTO Customer (Name, Email, Phone, PersonalInfo)
 VALUES ('Customer 1', 'customer1@email.com', '1234567890', 'Personal info for Customer 1'),
@@ -92,15 +93,11 @@ INSERT INTO Account (Username, Password, CustomerID, Role, CreatedDate, CreatedB
 VALUES ('admin', '123456', 1, 'admin', GETDATE(), 'admin'),
        ('user', '123456', 2, 'user', GETDATE(), 'admin');
 
-INSERT INTO Invoice (CustomerID, RoomID, CheckInDate, CheckOutDate, Total, PaymentMethod, CreatedDate, CreatedBy)
-VALUES (1, 1, GETDATE(), DATEADD(day, 1, GETDATE()), 100.00, 'Cash', GETDATE(), 'admin'),
-       (2, 2, GETDATE(), DATEADD(day, 1, GETDATE()), 200.00, 'Credit Card', GETDATE(), 'admin'); 
+
 
 INSERT INTO Service (Name, Price, CreatedDate, CreatedBy)
-VALUES ('Service 1', 50.00, GETDATE(), 'admin'),
-       ('Service 2', 75.00, GETDATE(), 'admin');
+VALUES ('Snack', 50.00, GETDATE(), 'admin'),
+       ('Noodle', 75.00, GETDATE(), 'admin');
 
-INSERT INTO InvoiceService (InvoiceID, ServiceID, CreatedDate, CreatedBy)
-VALUES (1, 1, GETDATE(), 'admin'),
-       (2, 2, GETDATE(), 'admin'); 
+
 
